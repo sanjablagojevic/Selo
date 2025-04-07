@@ -1,7 +1,6 @@
 ﻿import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Input, Typography, Grid, Container, Snackbar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
     const [title, setTitle] = useState('');
@@ -9,7 +8,6 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
     const [photo, setPhoto] = useState<File | null>(null);
     const [document, setDocument] = useState<File | null>(null);
     const [openSnackbar, setOpenSnackbar] = useState(false);
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,10 +26,6 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
             });
 
             console.log('Novost dodana:', response.data);
-            setOpenSnackbar(true); 
-            setTimeout(() => {
-                navigate('/');  
-            }, 2000);  
         } catch (error) {
             console.error('Greška prilikom dodavanja novosti', error);
         }
@@ -100,7 +94,7 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
                 open={openSnackbar}
                 autoHideDuration={2000}  // Auto hide after 2 seconds
                 onClose={() => setOpenSnackbar(false)}
-                message="Novost uspešno dodana!"
+                message="Novost uspješno dodana!"
             />
         </Container>
     );

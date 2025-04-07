@@ -1,5 +1,4 @@
-
-import AuthorizeView, { AuthorizedUser } from "../Components/AuthorizeView.tsx";
+import AuthorizeView from "../Components/AuthorizeView.tsx";
 import Header from "../Components/Header/Header.tsx";
 import HeroSection from "../Components/HeroSection/HeroSection.tsx";
 import Features from "../Components/Features/Features.tsx";

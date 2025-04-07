@@ -7,7 +7,7 @@
         public string Drzava { get; set; }
         public string Lokacija { get; set; }
         public string OvlasceniKorisnik { get; set; }
-        public List<Novost> Novosti { get; set; }
+        public List<Novost> Novosti { get; set; } = new List<Novost>();
 
     }
 }

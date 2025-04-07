@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Container, Box, Avatar, Typography, TextField, Button, CssBaseline, Grid } from "@mui/material";
 
 function Login() {
@@ -7,7 +7,6 @@ function Login() {
     const [password, setPassword] = useState<string>("");
     const [rememberme, setRememberme] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
-    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -16,17 +15,13 @@ function Login() {
         if (name === "rememberme") setRememberme(e.target.checked);
     };
 
-    const handleRegisterClick = () => {
-        navigate("/register");
-    };
-
     const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!email || !password) {
             setError("Please fill in all fields.");
         } else {
             setError("");
-            var loginurl = "";
+            let loginurl = "";
             if (rememberme === true) loginurl = "/login?useCookies=true";
             else loginurl = "/login?useSessionCookies=true";
 
