@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ChangeEvent } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, Card, CardContent, Divider, InputAdornment } from '@mui/material';
 
 interface VillageProfileProps {
     selectedSelo: any | null;
@@ -21,109 +21,232 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
     handleFilesUpload,
     setEditMode,
 }) => {
-
     return (
-        <Box sx={{
-            width: '100%',
-            maxWidth: 1200,
-            margin: '0 auto',
-            p: 4
-        }}>
+        <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', p: 4 }}>
             <Typography variant="h6" gutterBottom>
                 {editMode ? 'Izmijeni profil sela' : 'Profil sela'}
             </Typography>
 
-            {/* Village Info */}
-            <TextField
-                fullWidth
-                label="Naziv"
-                name="naziv"
-                value={selectedSelo?.naziv || ''}
-                disabled={!editMode}
-                margin="normal"
-            />
-            <TextField
-                fullWidth
-                label="Opis"
-                name="opis"
-                value={selectedSelo?.opis || ''}
-                onChange={handleChange}
-                disabled={!editMode}
-                margin="normal"
-                multiline
-                rows={4}
-            />
+            {/* General Information Section */}
+            <Card sx={{ mb: 4 }}>
+                <CardContent>
+                    <Typography variant="h6">General Information</Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Naziv"
+                                name="naziv"
+                                value={selectedSelo?.naziv || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Ovlasceni Korisnik"
+                                name="ovlasceniKorisnik"
+                                value={selectedSelo?.ovlasceniKorisnik || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Povrsina (km²)"
+                                name="povrsina"
+                                value={selectedSelo?.povrsina || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                                type="number"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Broj Stanovnika"
+                                name="brojStanovnika"
+                                value={selectedSelo?.brojStanovnika || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                                type="number"
+                            />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
 
-            {/* Logo */}
-            <div>
-                <Typography variant="body1">Logo</Typography>
-                {selectedSelo?.logoUrl && <img src={selectedSelo.logoUrl} alt="Logo" width={100} />}
-                {editMode && <Button variant="contained" component="label">
-                    Upload Logo
-                    <input type="file" hidden onChange={(e) => handleFileUpload(e, 'logo')} />
-                </Button>}
-            </div>
+            {/* Location Section */}
+            <Card sx={{ mb: 4 }}>
+                <CardContent>
+                    <Typography variant="h6">Location</Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Latitude"
+                                name="lat"
+                                value={selectedSelo?.lat || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                                type="number"
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">°</InputAdornment>,
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Longitude"
+                                name="lng"
+                                value={selectedSelo?.lng || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                                type="number"
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">°</InputAdornment>,
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
 
-            {/* QR Code */}
-            <div>
-                <Typography variant="body1">QR Code</Typography>
-                {selectedSelo?.qrCodeUrl && <img src={selectedSelo.qrCodeUrl} alt="QR Code" width={100} />}
-                {editMode && <Button variant="contained" component="label">
-                    Upload QR Code
-                    <input type="file" hidden onChange={(e) => handleFileUpload(e, 'qrCode')} />
-                </Button>}
-            </div>
+            {/* Agriculture & Tourism Section */}
+            <Card sx={{ mb: 4 }}>
+                <CardContent>
+                    <Typography variant="h6">Agriculture & Tourism</Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Specijalizacija Poljoprivrede"
+                                name="specijalizacijaPoljoprivrednogSektora"
+                                value={selectedSelo?.specijalizacijaPoljoprivrednogSektora || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label="Potencijal Agroturizma"
+                                name="potencijalAgroturizma"
+                                value={selectedSelo?.potencijalAgroturizma || ''}
+                                disabled={!editMode}
+                                onChange={handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
 
-            {/* Photos */}
-            <div>
-                <Typography variant="body1">Photos</Typography>
+            {/* Social Media Section */}
+            <Card sx={{ mb: 4 }}>
+                <CardContent>
+                    <Typography variant="h6">Social Media</Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Facebook Link"
+                                name="facebook"
+                                value={selectedSelo?.socialLinks?.facebook || ''}
+                                onChange={handleChange}
+                                disabled={!editMode}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Instagram Link"
+                                name="instagram"
+                                value={selectedSelo?.socialLinks?.instagram || ''}
+                                onChange={handleChange}
+                                disabled={!editMode}
+                                margin="normal"
+                            />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
 
-                {editMode && <Button variant="contained" component="label">
-                    Upload Photos
-                    <input type="file" hidden multiple onChange={(e) => handleFilesUpload(e, 'photos')} />
-                </Button>}
-            </div>
+            {/* Images and Files Section */}
+            <Card sx={{ mb: 4 }}>
+                <CardContent>
+                    <Typography variant="h6">Images & Files</Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography variant="body1">Logo</Typography>
+                            {selectedSelo?.logoUrl && <img src={selectedSelo.logoUrl} alt="Logo" width={100} />}
+                            {editMode && (
+                                <Button variant="contained" component="label">
+                                    Upload Logo
+                                    <input type="file" hidden onChange={(e) => handleFileUpload(e, 'logo')} />
+                                </Button>
+                            )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="body1">QR Code</Typography>
+                            {selectedSelo?.qrCodeUrl && <img src={selectedSelo.qrCodeUrl} alt="QR Code" width={100} />}
+                            {editMode && (
+                                <Button variant="contained" component="label">
+                                    Upload QR Code
+                                    <input type="file" hidden onChange={(e) => handleFileUpload(e, 'qrCode')} />
+                                </Button>
+                            )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="body1">Photos</Typography>
+                            {editMode && (
+                                <Button variant="contained" component="label">
+                                    Upload Photos
+                                    <input type="file" hidden multiple onChange={(e) => handleFilesUpload(e, 'photos')} />
+                                </Button>
+                            )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="body1">Documents</Typography>
+                            {editMode && (
+                                <Button variant="contained" component="label">
+                                    Upload Document
+                                    <input type="file" hidden onChange={(e) => handleFileUpload(e, 'documents')} />
+                                </Button>
+                            )}
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
 
-            {/* Social Media Links */}
-            <TextField
-                fullWidth
-                label="Facebook Link"
-                name="facebook"
-                value={selectedSelo?.socialLinks?.facebook || ''}
-                onChange={handleChange}
-                disabled={!editMode}
-                margin="normal"
-            />
-            <TextField
-                fullWidth
-                label="Instagram Link"
-                name="instagram"
-                value={selectedSelo?.socialLinks?.instagram || ''}
-                onChange={handleChange}
-                disabled={!editMode}
-                margin="normal"
-            />
-
-            {/* Documents */}
-            <div>
-                <Typography variant="body1">Documents</Typography>
-
-                {editMode && <Button variant="contained" component="label">
-                    Upload Document
-                    <input type="file" hidden onChange={(e) => handleFileUpload(e, 'documents')} />
-                </Button>}
-            </div>
-
+            {/* Save/Close Button */}
             <Box sx={{ mt: 2 }}>
                 <Button variant="contained" onClick={handleProfileUpdate}>
                     {editMode ? 'Save Changes' : 'Close'}
                 </Button>
-                {editMode && <Button variant="outlined" onClick={() => setEditMode(false)}>
-                    Go Back
-                </Button>}
+                {editMode && (
+                    <Button variant="outlined" onClick={() => setEditMode(false)} sx={{ ml: 2 }}>
+                        Go Back
+                    </Button>
+                )}
             </Box>
-        </Box>
-    );
+        </Box>);
 };
 
 export default SeloProfil;

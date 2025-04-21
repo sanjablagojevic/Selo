@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import axios from 'axios';
 
@@ -11,8 +11,8 @@ interface DodajKorisnikaProps {
 
 export interface ApplicationUser {
     id: string;
-    userName: string;
-    userSurname: string,
+    firstName: string;
+    lastName: string,
     email: string;
     villages: string[]; // Assign multiple villages to a user
 }
@@ -20,8 +20,8 @@ export interface ApplicationUser {
 const DodajKorisnika: React.FC<DodajKorisnikaProps> = ({ open, onClose, onAddUser, villages }) => {
     const [newUser, setNewUser] = useState<ApplicationUser>({
         id: '',
-        userName: '',
-        userSurname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         villages: [],
     });
@@ -37,17 +37,17 @@ const DodajKorisnika: React.FC<DodajKorisnikaProps> = ({ open, onClose, onAddUse
     const handleVillageChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setNewUser((prevUser) => ({
             ...prevUser,
-            villages: event.target.value as string[], // Update with selected villages
+            villages: event.target.value as string[],
         }));
     };
 
     const handleAddUser = async () => {
         try {
-            // Send POST request to add the user
+            
             await axios.post('https://localhost:7249/api/usermanager/register', newUser);
-            onAddUser(newUser); // Call the function to update the users in the parent component
-            setNewUser({ id: '', userName: '', userSurname: '', email: '', villages: [] }); // Reset the form
-            onClose(); // Close the modal
+            onAddUser(newUser);
+            setNewUser({ id: '', firstName: '', lastName: '', email: '', villages: [] }); 
+            onClose(); 
         } catch (err) {
             console.error('Failed to add user:', err);
         }
@@ -59,16 +59,16 @@ const DodajKorisnika: React.FC<DodajKorisnikaProps> = ({ open, onClose, onAddUse
             <DialogContent>
                 <TextField
                     label="Ime"
-                    name="userName"
-                    value={newUser.userName}
+                    name="firstName"
+                    value={newUser.firstName}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
                 />
                 <TextField
                     label="Prezime"
-                    name="userSurname"
-                    value={newUser.userSurname}
+                    name="lastName"
+                    value={newUser.lastName}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"

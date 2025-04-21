@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Data;
 using ReactApp1.Server.Models;
+using ReactApp1.Server.Models.ReactApp1.Server.Models;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -75,5 +76,27 @@ public class SeloController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // GET: api/Selo/countries
+    [HttpGet("countries")]
+    public async Task<ActionResult<IEnumerable<Countries>>> GetCountries()
+    {
+        return await _context.Countries.ToListAsync();
+    }
+
+    // GET: api/Selo/countries/{id}/cities
+    [HttpGet("countries/{id}/cities")]
+    public async Task<ActionResult<IEnumerable<Cities>>> GetCitiesByCountry(int id)
+    {
+        var country = await _context.Countries.Include(c => c.Cities)
+                                               .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (country == null)
+        {
+            return NotFound();
+        }
+
+        return country.Cities.ToList();
     }
 }

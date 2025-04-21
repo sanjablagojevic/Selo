@@ -68,14 +68,16 @@ const Korisnici: React.FC = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><strong>Name</strong></TableCell>
+                                    <TableCell><strong>First Name</strong></TableCell>
+                                    <TableCell><strong>Last Name</strong></TableCell>
                                     <TableCell><strong>Email</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {users.map((user) => (
                                     <TableRow key={user.id}>
-                                        <TableCell>{user.userName}</TableCell>
+                                        <TableCell>{user.firstName}</TableCell>
+                                        <TableCell>{user.lastName}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                     </TableRow>
                                 ))}

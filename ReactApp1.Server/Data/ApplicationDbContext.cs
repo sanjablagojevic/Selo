@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
+using ReactApp1.Server.Models.ReactApp1.Server.Models;
 using System.Reflection.Emit;
 
 namespace ReactApp1.Server.Data
@@ -14,6 +15,8 @@ namespace ReactApp1.Server.Data
 
         public DbSet<Selo> Sela { get; set; }
         public DbSet<Novost> Novosti { get; set; }
+        public DbSet<Countries> Countries { get; set; }
+        public DbSet<Cities> Cities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

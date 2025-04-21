@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography, Button, Modal, Box, TextField } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography, Button, Modal, Box, TextField, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -10,15 +11,15 @@ import { useNavigate } from 'react-router-dom';
 interface Selo {
     id: number;
     naziv: string;
-    drzava: string;
-    lokacija: string;
+    country: string;
+    city: string;
     ovlasceniKorisnik: string;
 }
 
 interface DodajSelo {
     naziv: string;
-    drzava: string;
-    lokacija: string;
+    country: string;
+    city: string;
     ovlasceniKorisnik: string;
 }
 
@@ -27,16 +28,38 @@ const SeloList: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [newSelo, setNewSelo] = useState<DodajSelo>({
         naziv: '',
-        drzava: '',
-        lokacija: '',
+        country: '',
+        city: '',
         ovlasceniKorisnik: '',
     });
     const [selectedSelo, setSelectedSelo] = useState<Selo | null>(null); // State to track the selected village
     const [editMode, setEditMode] = useState<boolean>(false); // State to track if we are in edit mode
     const [openDeleteModal, setOpenDeleteModal] = useState(false); // State for delete confirmation modal
     const [deleteSeloId, setDeleteSeloId] = useState<number | null>(null); // ID of the village to delete
+    const [countries, setCountries] = useState<any[]>([]);
+    const [cities, setCities] = useState<any[]>([]);
 
     const navigate = useNavigate();
+
+    // Fetch countries on initial load
+    useEffect(() => {
+        axios.get('https://localhost:7249/api/Selo/countries')
+            .then(response => {
+                setCountries(response.data);
+            })
+            .catch(error => console.error('Error fetching countries:', error));
+    }, []);
+
+    // Fetch cities whenever a country is selected
+    useEffect(() => {
+        if (newSelo.country) {
+            axios.get(`https://localhost:7249/api/Selo/countries/${newSelo.country}/cities`)
+                .then(response => {
+                    setCities(response.data);
+                })
+                .catch(error => console.error('Error fetching cities:', error));
+        }
+    }, [newSelo.country]);
 
     useEffect(() => {
         axios.get('https://localhost:7249/api/selo')
@@ -70,13 +93,25 @@ const SeloList: React.FC = () => {
         console.log(`Edit village with id: ${id}`);
     };
 
+    // Handle country change
+    const handleCountryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const selectedCountry = event.target.value as string;
+        setNewSelo({ ...newSelo, country: selectedCountry, city: '' }); // Reset city when country changes
+    };
+
+    // Handle city change
+    const handleCityChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const selectedCity = event.target.value as string;
+        setNewSelo({ ...newSelo, city: selectedCity });
+    };
+
     const handleAddSelo = () => {
         console.log(newSelo);
         axios.post(`https://localhost:7249/api/selo`, newSelo)
             .then(response => {
                 setSela([...sela, response.data]);
                 setOpen(false);
-                setNewSelo({ naziv: '', drzava: '', lokacija: '', ovlasceniKorisnik: '' });
+                setNewSelo({ naziv: '', country: '', city: '', ovlasceniKorisnik: '' });
             })
             .catch(error => console.error('There was an error adding the village!', error));
     };
@@ -139,8 +174,8 @@ const SeloList: React.FC = () => {
                             {sela.map(selo => (
                                 <TableRow key={selo.id}>
                                     <TableCell>{selo.naziv}</TableCell>
-                                    <TableCell>{selo.drzava}</TableCell>
-                                    <TableCell>{selo.lokacija}</TableCell>
+                                    <TableCell>{selo.country}</TableCell>
+                                    <TableCell>{selo.city}</TableCell>
                                     <TableCell>{selo.ovlasceniKorisnik}</TableCell>
                                     <TableCell align="center">
                                         <IconButton
@@ -199,22 +234,35 @@ const SeloList: React.FC = () => {
                         onChange={handleChange}
                         margin="normal"
                     />
-                    <TextField
-                        fullWidth
-                        label="Drzava"
-                        name="drzava"
-                        value={newSelo.drzava}
-                        onChange={handleChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Lokacija"
-                        name="lokacija"
-                        value={newSelo.lokacija}
-                        onChange={handleChange}
-                        margin="normal"
-                    />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Drzava</InputLabel>
+                        <Select
+                            value={newSelo.country}
+                            name="country"
+                            onChange={handleCountryChange}
+                        >
+                            {countries.map(country => (
+                                <MenuItem key={country.id} value={country.id}>
+                                    {country.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Lokacija</InputLabel>
+                        <Select
+                            value={newSelo.city}
+                            name="city"
+                            onChange={handleCityChange}
+                            disabled={!newSelo.country}
+                        >
+                            {cities.map(city => (
+                                <MenuItem key={city.id} value={city.id}>
+                                    {city.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <TextField
                         fullWidth
                         label="Ovlasceni Korisnik"

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReactApp1.Server.Data;
 
@@ -11,9 +12,11 @@ using ReactApp1.Server.Data;
 namespace ReactApp1.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421121839_new models")]
+    partial class newmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,9 +290,6 @@ namespace ReactApp1.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Datum")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DokumentUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -314,7 +314,7 @@ namespace ReactApp1.Server.Migrations
                     b.ToTable("Novosti");
                 });
 
-            modelBuilder.Entity("ReactApp1.Server.Models.ReactApp1.Server.Models.Selo", b =>
+            modelBuilder.Entity("ReactApp1.Server.Models.Selo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -322,28 +322,13 @@ namespace ReactApp1.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BrojStanovnika")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DodatneInformacije")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EkonomskaVitalnost")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FAOProgrami")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JavniPrevoz")
+                    b.Property<string>("Drzava")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -353,50 +338,15 @@ namespace ReactApp1.Server.Migrations
                     b.Property<double>("Lng")
                         .HasColumnType("float");
 
+                    b.Property<string>("Lokacija")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OgranicenjaUrazvoju")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OsnovneUsluge")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OvlasceniKorisnik")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostojecaAplikacija")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PotencijalAgroturizma")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PotencijalniUcesnici")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Povrsina")
-                        .HasColumnType("float");
-
-                    b.Property<string>("ResursiIKapaciteti")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SpecijalizacijaPoljoprivrednogSektora")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StepenRazvijenosti")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TipRuralnogPodrucja")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -407,31 +357,6 @@ namespace ReactApp1.Server.Migrations
                     b.HasIndex("CountryId");
 
                     b.ToTable("Sela");
-                });
-
-            modelBuilder.Entity("ReactApp1.Server.Models.SeloImages", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsLogo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SeloId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SeloId");
-
-                    b.ToTable("SeloImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -498,7 +423,7 @@ namespace ReactApp1.Server.Migrations
 
             modelBuilder.Entity("ReactApp1.Server.Models.Novost", b =>
                 {
-                    b.HasOne("ReactApp1.Server.Models.ReactApp1.Server.Models.Selo", "Selo")
+                    b.HasOne("ReactApp1.Server.Models.Selo", "Selo")
                         .WithMany("Novosti")
                         .HasForeignKey("SeloId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -507,7 +432,7 @@ namespace ReactApp1.Server.Migrations
                     b.Navigation("Selo");
                 });
 
-            modelBuilder.Entity("ReactApp1.Server.Models.ReactApp1.Server.Models.Selo", b =>
+            modelBuilder.Entity("ReactApp1.Server.Models.Selo", b =>
                 {
                     b.HasOne("ReactApp1.Server.Models.Cities", "City")
                         .WithMany()
@@ -522,27 +447,14 @@ namespace ReactApp1.Server.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("ReactApp1.Server.Models.SeloImages", b =>
-                {
-                    b.HasOne("ReactApp1.Server.Models.ReactApp1.Server.Models.Selo", "Selo")
-                        .WithMany("SeloImages")
-                        .HasForeignKey("SeloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Selo");
-                });
-
             modelBuilder.Entity("ReactApp1.Server.Models.Countries", b =>
                 {
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("ReactApp1.Server.Models.ReactApp1.Server.Models.Selo", b =>
+            modelBuilder.Entity("ReactApp1.Server.Models.Selo", b =>
                 {
                     b.Navigation("Novosti");
-
-                    b.Navigation("SeloImages");
                 });
 #pragma warning restore 612, 618
         }
