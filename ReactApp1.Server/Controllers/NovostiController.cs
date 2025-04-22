@@ -36,32 +36,33 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpPost("{seloId}")]
-        public async Task<ActionResult<Novost>> CreateNovost(int seloId, [FromForm] Novost novost, [FromForm] IFormFile? slika, [FromForm] IFormFile? dokument)
+        public async Task<ActionResult<Novost>> CreateNovost(int seloId, [FromForm] NovostCreateRequest request)
         {
-            if (novost == null)
+            if (request.Novost == null)
             {
                 return BadRequest("Podaci o novosti nisu ispravni.");
             }
 
-            // Ovdje možete spremiti fajlove (sliku i dokument) na server
-            if (slika != null)
+            var novost = request.Novost;
+
+            if (request.Slika != null)
             {
-                var slikaPath = Path.Combine("wwwroot/uploads", slika.FileName);
+                var slikaPath = Path.Combine("wwwroot/uploads", request.Slika.FileName);
                 using (var stream = new FileStream(slikaPath, FileMode.Create))
                 {
-                    await slika.CopyToAsync(stream);
+                    await request.Slika.CopyToAsync(stream);
                 }
-                novost.SlikaUrl = "/uploads/" + slika.FileName;
+                novost.SlikaUrl = "/uploads/" + request.Slika.FileName;
             }
 
-            if (dokument != null)
+            if (request.Dokument != null)
             {
-                var dokumentPath = Path.Combine("wwwroot/uploads", dokument.FileName);
+                var dokumentPath = Path.Combine("wwwroot/uploads", request.Dokument.FileName);
                 using (var stream = new FileStream(dokumentPath, FileMode.Create))
                 {
-                    await dokument.CopyToAsync(stream);
+                    await request.Dokument.CopyToAsync(stream);
                 }
-                novost.DokumentUrl = "/uploads/" + dokument.FileName;
+                novost.DokumentUrl = "/uploads/" + request.Dokument.FileName;
             }
 
             novost.SeloId = seloId;
@@ -71,6 +72,7 @@ namespace ReactApp1.Server.Controllers
 
             return CreatedAtAction(nameof(GetNovostiBySelo), new { seloId = seloId }, novost);
         }
+
 
         // Ažuriraj novost
         [HttpPut("{id}")]

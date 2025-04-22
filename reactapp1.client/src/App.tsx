@@ -8,6 +8,7 @@ import SeloList from './Components/Selo/SeloList.tsx';
 import AddNews from './Components/Novosti/AddNews.tsx';
 import Korisnici from './Components/Korisnici/Korisnici.tsx';
 import SeloProfil from './Components/Selo/SeloProfil.tsx';
+import ForgottenPassword from './Pages/ForgottenPassword.tsx';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgotten-password" element={<ForgottenPassword />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/selo" element={<SeloList />} />
                 <Route path="/view/:id" element={<SeloProfil />} />

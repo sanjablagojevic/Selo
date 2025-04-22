@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -59,6 +60,34 @@ namespace ReactApp1.Server.Controllers
             await SendWelcomeEmail(user.Email, pass);
 
             return Ok(user);
+        }
+
+        // POST: api/users/forgot-password
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = $"{_configuration["AppSettings:BaseUrl"]}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(request.Email)}";
+
+            var emailService = new EmailService(_configuration);
+            var subject = "Password Reset Request";
+            var body = $"To reset your password, click the following link: <a href='{resetLink}'>Reset Password</a>";
+
+            await emailService.SendEmailAsync(request.Email, subject, body);
+
+            return Ok("Password reset link has been sent to your email.");
         }
 
         private async Task SendWelcomeEmail(string email, string password)
