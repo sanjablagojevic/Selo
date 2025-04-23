@@ -10,7 +10,7 @@ const Korisnici: React.FC = () => {
     const [users, setUsers] = useState<ApplicationUser[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [open, setOpen] = useState<boolean>(false); // Stanje za modal
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -36,7 +36,7 @@ const Korisnici: React.FC = () => {
     };
 
     const handleAddUser = (newUser: ApplicationUser) => {
-        setUsers((prevUsers) => [...prevUsers, newUser]); // Ažuriraj listu korisnika
+        setUsers((prevUsers) => [...prevUsers, newUser]);
     };
 
     if (loading) {
@@ -68,16 +68,14 @@ const Korisnici: React.FC = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell><strong>First Name</strong></TableCell>
-                                    <TableCell><strong>Last Name</strong></TableCell>
+                                    <TableCell><strong>Ime i prezime</strong></TableCell>
                                     <TableCell><strong>Email</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {users.map((user) => (
                                     <TableRow key={user.id}>
-                                        <TableCell>{user.firstName}</TableCell>
-                                        <TableCell>{user.lastName}</TableCell>
+                                        <TableCell>{user.firstName} {user.lastName}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                     </TableRow>
                                 ))}

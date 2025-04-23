@@ -16,7 +16,6 @@ const Features: React.FC = () => {
                 const response = await fetch('https://localhost:7249/api/Novosti'); // Update this URL with your actual API endpoint
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data);
                     setNews(data);
                     setLoading(false);
                 } else {

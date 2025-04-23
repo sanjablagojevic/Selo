@@ -21,7 +21,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/selo" element={<SeloList />} />
                 <Route path="/view/:id" element={<SeloProfil />} />
-                <Route path="/add-news" element={<AddNews seloId={1} />} />
+                <Route path="/add-news" element={<AddNews seloId={0} />} />
                 <Route path="/korisnici" element={<Korisnici />} />
             </Routes>
         </BrowserRouter>
