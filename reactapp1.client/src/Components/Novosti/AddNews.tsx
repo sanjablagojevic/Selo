@@ -1,4 +1,5 @@
-﻿import React, { useState } from 'react';
+﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Input, Typography, Grid, Container, Snackbar } from '@mui/material';
 
@@ -9,14 +10,23 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
     const [document, setDocument] = useState<File | null>(null);
     const [openSnackbar, setOpenSnackbar] = useState(false);
 
+    interface NovostCreateRequest {
+        Novost: {
+            Naslov: string;
+            Opis: string;
+        };
+        Slika: File | null;
+        Dokument: File | null;
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('Naslov', title);
-        formData.append('Opis', description);
-        if (photo) formData.append('Slika', photo || new Blob());
-        if (document) formData.append('Dokument', document || new Blob());
+        formData.append('Novost.Naslov', title);
+        formData.append('Novost.Opis', description);
+        if (photo) formData.append('Slika', photo);
+        if (document) formData.append('Dokument', document);
 
         try {
             const response = await axios.post(`https://localhost:7249/api/Novosti/${seloId}`, formData, {
@@ -26,10 +36,12 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
             });
 
             console.log('Novost dodana:', response.data);
+            setOpenSnackbar(true);
         } catch (error) {
             console.error('Greška prilikom dodavanja novosti', error);
         }
     };
+
 
 
     return (
