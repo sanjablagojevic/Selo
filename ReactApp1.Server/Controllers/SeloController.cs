@@ -85,6 +85,13 @@ public class SeloController : ControllerBase
         return await _context.Countries.ToListAsync();
     }
 
+    // GET: api/Selo/countries
+    [HttpGet("cities")]
+    public async Task<ActionResult<IEnumerable<Cities>>> GetCities()
+    {
+        return await _context.Cities.ToListAsync();
+    }
+
     // GET: api/Selo/countries/{id}/cities
     [HttpGet("countries/{id}/cities")]
     public async Task<ActionResult<IEnumerable<Cities>>> GetCitiesByCountry(int id)

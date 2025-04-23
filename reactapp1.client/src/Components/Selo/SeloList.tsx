@@ -13,15 +13,15 @@ import DeleteSeloModal from './DeleteSeloModal';
 interface Selo {
     id: number;
     naziv: string;
-    country: string;
-    city: string;
+    countryId: number;
+    cityId: number;
     ovlasceniKorisnik: string;
 }
 
 interface DodajSelo {
     naziv: string;
-    country: string;
-    city: string;
+    countryId: number;
+    cityId: number;
     ovlasceniKorisnik: string;
 }
 
@@ -30,18 +30,17 @@ const SeloList: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [newSelo, setNewSelo] = useState<DodajSelo>({
         naziv: '',
-        country: '',
-        city: '',
+        countryId: 0,
+        cityId: 0,
         ovlasceniKorisnik: '',
     });
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [deleteSeloId, setDeleteSeloId] = useState<number | null>(null);
     const [countries, setCountries] = useState<any[]>([]);
     const [cities, setCities] = useState<any[]>([]);
+    const [allCities, setAllCities] = useState<any[]>([]);
 
     const navigate = useNavigate();
-
-    // Fetch countries and cities as before
     useEffect(() => {
         axios.get('https://localhost:7249/api/Selo/countries')
             .then(response => setCountries(response.data))
@@ -49,18 +48,36 @@ const SeloList: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (newSelo.country) {
-            axios.get(`https://localhost:7249/api/Selo/countries/${newSelo.country}/cities`)
+        axios.get('https://localhost:7249/api/Selo/cities')
+            .then(response => setAllCities(response.data))
+            .catch(error => console.error('Error fetching countries:', error));
+    }, []);
+
+    useEffect(() => {
+        if (newSelo.countryId) {
+            axios.get(`https://localhost:7249/api/Selo/countries/${newSelo.countryId}/cities`)
                 .then(response => setCities(response.data))
                 .catch(error => console.error('Error fetching cities:', error));
         }
-    }, [newSelo.country]);
+    }, [newSelo.countryId]);
 
     useEffect(() => {
         axios.get('https://localhost:7249/api/selo')
             .then(response => setSela(response.data))
             .catch(error => console.error('There was an error fetching the villages!', error));
     }, []);
+
+    // Fetch the country and city names based on their IDs
+    const getCountryName = (countryId: number) => {
+        const country = countries.find(c => c.id === countryId);
+        return country ? country.name : 'N/A';
+    };
+
+    const getCityName = (cityId: number) => {
+        console.log(cityId);
+        const city = allCities.find(c => c.id === cityId);
+        return city ? city.name : 'N/A';
+    };
 
     const deleteSelo = () => {
         if (deleteSeloId !== null) {
@@ -78,13 +95,13 @@ const SeloList: React.FC = () => {
     };
 
     const handleCountryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const selectedCountry = event.target.value as string;
-        setNewSelo({ ...newSelo, country: selectedCountry, city: '' });
+        const selectedCountryId = event.target.value as number;
+        setNewSelo({ ...newSelo, countryId: selectedCountryId, cityId: 0 });
     };
 
     const handleCityChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const selectedCity = event.target.value as string;
-        setNewSelo({ ...newSelo, city: selectedCity });
+        const selectedCityId = event.target.value as number;
+        setNewSelo({ ...newSelo, cityId: selectedCityId });
     };
 
     const handleAddSelo = () => {
@@ -92,7 +109,7 @@ const SeloList: React.FC = () => {
             .then(response => {
                 setSela([...sela, response.data]);
                 setOpen(false);
-                setNewSelo({ naziv: '', country: '', city: '', ovlasceniKorisnik: '' });
+                setNewSelo({ naziv: '', countryId: 0, cityId: 0, ovlasceniKorisnik: '' });
             })
             .catch(error => console.error('There was an error adding the village!', error));
     };
@@ -149,8 +166,8 @@ const SeloList: React.FC = () => {
                         {sela.map(selo => (
                             <TableRow key={selo.id}>
                                 <TableCell>{selo.naziv}</TableCell>
-                                <TableCell>{selo.country}</TableCell>
-                                <TableCell>{selo.city}</TableCell>
+                                <TableCell>{getCountryName(selo.countryId)}</TableCell>
+                                <TableCell>{getCityName(selo.cityId)}</TableCell>
                                 <TableCell>{selo.ovlasceniKorisnik}</TableCell>
                                 <TableCell align="center">
                                     <IconButton color="primary" onClick={() => navigate(`/view/${selo.id}`)} title="View">
