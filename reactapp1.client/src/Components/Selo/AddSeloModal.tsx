@@ -72,7 +72,6 @@ const AddSeloModal: React.FC<AddSeloModalProps> = ({
                     value={newSelo.city}
                     name="city"
                     onChange={handleCityChange}
-                    disabled={!newSelo.country}
                 >
                     {cities.map(city => (
                         <MenuItem key={city.id} value={city.id}>
