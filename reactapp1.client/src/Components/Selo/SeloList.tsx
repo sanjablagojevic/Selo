@@ -74,7 +74,6 @@ const SeloList: React.FC = () => {
     };
 
     const getCityName = (cityId: number) => {
-        console.log(cityId);
         const city = allCities.find(c => c.id === cityId);
         return city ? city.name : 'N/A';
     };

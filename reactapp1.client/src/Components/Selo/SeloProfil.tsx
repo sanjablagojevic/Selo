@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Grid, Card, CardContent, Divider, InputAdornment } from '@mui/material';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 interface VillageProfileProps {
-    selectedSelo: any | null;
     editMode: boolean;
     handleProfileUpdate: () => void;
     handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleFileUpload: (e: ChangeEvent<HTMLInputElement>, type: string) => void;
     handleFilesUpload: (e: ChangeEvent<HTMLInputElement>, type: string) => void;
     setEditMode: (edit: boolean) => void;
+    seloId: number; // Add seloId as a prop to pass the id for fetching
 }
 
 const SeloProfil: React.FC<VillageProfileProps> = ({
-    selectedSelo,
+    seloId,
     editMode,
     handleProfileUpdate,
     handleChange,
@@ -21,6 +23,19 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
     handleFilesUpload,
     setEditMode,
 }) => {
+    const [selectedSelo, setSelectedSelo] = useState<any | null>(null);
+    const { id: routeSeloId } = useParams<{ id: string }>();
+
+    useEffect(() => {
+        axios.get(`https://localhost:7249/api/Selo/${routeSeloId }`)
+            .then(response => setSelectedSelo(response.data))
+            .catch(error => console.error('Error fetching selo:', error));
+    }, [seloId]);
+
+    if (!selectedSelo) {
+        return <Typography>Loading...</Typography>;
+    }
+
     return (
         <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', p: 4 }}>
             <Typography variant="h6" gutterBottom>
@@ -246,7 +261,8 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                     </Button>
                 )}
             </Box>
-        </Box>);
+        </Box>
+    );
 };
 
 export default SeloProfil;
