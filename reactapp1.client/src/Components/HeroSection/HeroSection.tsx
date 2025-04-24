@@ -6,7 +6,6 @@ const HeroSection: React.FC = () => {
             <div className="hero-content">
                 <h2>Digitalno Selo</h2>
                 <p>Projekat „Digitalno selo“ za cilj ima stvaranje mogućnosti za lakšu, efikasniju i održiviju proizvodnju, veću zaradu poljoprivrednih proizvođača i privlačniji život na selu, posebno za mlade.</p>
-                <button>Get Started</button>
             </div>
         </section>
     );

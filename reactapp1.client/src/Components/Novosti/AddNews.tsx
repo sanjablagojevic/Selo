@@ -1,23 +1,13 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Input, Typography, Grid, Container, Snackbar } from '@mui/material';
 
-const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
+const AddNews: React.FC<{ seloId: number, onClose: () => void }> = ({ seloId, onClose, onNewsAdded }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [photo, setPhoto] = useState<File | null>(null);
     const [document, setDocument] = useState<File | null>(null);
     const [openSnackbar, setOpenSnackbar] = useState(false);
-
-    interface NovostCreateRequest {
-        Novost: {
-            Naslov: string;
-            Opis: string;
-        };
-        Slika: File | null;
-        Dokument: File | null;
-    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,12 +27,14 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
 
             console.log('Novost dodana:', response.data);
             setOpenSnackbar(true);
+            setTimeout(() => {
+                onNewsAdded();
+                onClose();
+            }, 2000);
         } catch (error) {
             console.error('Greška prilikom dodavanja novosti', error);
         }
     };
-
-
 
     return (
         <Container maxWidth="sm" sx={{ padding: '2rem', backgroundColor: '#f4f4f4', borderRadius: '8px' }}>
@@ -101,7 +93,6 @@ const AddNews: React.FC<{ seloId: number }> = ({ seloId }) => {
                 </Grid>
             </form>
 
-            {/* Snackbar for success message */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={2000}  // Auto hide after 2 seconds

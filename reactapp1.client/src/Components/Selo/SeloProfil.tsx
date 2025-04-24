@@ -2,7 +2,7 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Grid, Card, CardContent, Divider, InputAdornment } from '@mui/material';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 interface VillageProfileProps {
     editMode: boolean;
@@ -11,7 +11,7 @@ interface VillageProfileProps {
     handleFileUpload: (e: ChangeEvent<HTMLInputElement>, type: string) => void;
     handleFilesUpload: (e: ChangeEvent<HTMLInputElement>, type: string) => void;
     setEditMode: (edit: boolean) => void;
-    seloId: number; // Add seloId as a prop to pass the id for fetching
+    seloId: number;
 }
 
 const SeloProfil: React.FC<VillageProfileProps> = ({
@@ -27,7 +27,7 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
     const { id: routeSeloId } = useParams<{ id: string }>();
 
     useEffect(() => {
-        axios.get(`https://localhost:7249/api/Selo/${routeSeloId }`)
+        axios.get(`https://localhost:7249/api/Selo/${routeSeloId}`)
             .then(response => setSelectedSelo(response.data))
             .catch(error => console.error('Error fetching selo:', error));
     }, [seloId]);
@@ -41,6 +41,15 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
             <Typography variant="h6" gutterBottom>
                 {editMode ? 'Izmijeni profil sela' : 'Profil sela'}
             </Typography>
+
+            <Button
+                variant="contained"
+                component={Link}
+                to={`/news/${routeSeloId}`} 
+                sx={{ ml: 2 }}
+            >
+               Idi na novosti
+            </Button>
 
             {/* General Information Section */}
             <Card sx={{ mb: 4 }}>

@@ -15,6 +15,5 @@
     <Folder Include="src\Components\Footer\" />
     <Folder Include="src\Components\Korisnici\" />
     <Folder Include="src\Components\Map\" />
-    <Folder Include="src\Components\Novosti\" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@ import AddNews from './Components/Novosti/AddNews.tsx';
 import Korisnici from './Components/Korisnici/Korisnici.tsx';
 import SeloProfil from './Components/Selo/SeloProfil.tsx';
 import ForgottenPassword from './Pages/ForgottenPassword.tsx';
+import NovostiLista from './Components/Novosti/NovostiLista.tsx';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/selo" element={<SeloList />} />
                 <Route path="/view/:id" element={<SeloProfil />} />
+                <Route path="/news/:id" element={<NovostiLista />} />
                 <Route path="/add-news" element={<AddNews seloId={0} />} />
                 <Route path="/korisnici" element={<Korisnici />} />
             </Routes>

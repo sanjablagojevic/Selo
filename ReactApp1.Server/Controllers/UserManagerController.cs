@@ -1,103 +1,134 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using ReactApp1.Server.Data;
+﻿import React, { useState, useEffect } from 'react';
+import { Button, Modal, Box, Typography, TextField, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { DodajSelo } from './SeloList';
+import axios from 'axios';
 
-namespace ReactApp1.Server.Controllers
+interface AddSeloModalProps
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserManagerController : ControllerBase
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
-
-        public UserManagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IConfiguration configuration)
-        {
-            _userManager = userManager;
-            _context = context;
-            _configuration = configuration;
-        }
-
-        // GET: api/users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers()
-        {
-            var users = await _userManager.Users.ToListAsync();
-            return Ok(users);
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] ApplicationUser newUser)
-        {
-            if (newUser == null)
-                return BadRequest("User data is invalid.");
-
-            var pass = "Test123!";  // Default password
-
-            // Hash the password using PasswordHasher
-            var passwordHasher = new PasswordHasher<ApplicationUser>();
-            var hashedPassword = passwordHasher.HashPassword(newUser, pass);
-
-
-            var user = new ApplicationUser
-            {
-                UserName = newUser.Email,
-                Email = newUser.Email,
-                PasswordHash = hashedPassword,
-                FirstName = newUser.FirstName,
-                LastName = newUser.LastName,
-                //Villages = newUser.Villages
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            // Send email to created user
-            await SendWelcomeEmail(user.Email, pass);
-
-            return Ok(user);
-        }
-
-        // POST: api/users/forgot-password
-        [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
-        {
-            if (string.IsNullOrEmpty(request.Email))
-            {
-                return BadRequest("Email is required.");
-            }
-
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            var resetLink = $"{_configuration["AppSettings:BaseUrl"]}/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(request.Email)}";
-
-            var emailService = new EmailService(_configuration);
-            var subject = "Password Reset Request";
-            var body = $"To reset your password, click the following link: <a href='{resetLink}'>Reset Password</a>";
-
-            await emailService.SendEmailAsync(request.Email, subject, body);
-
-            return Ok("Password reset link has been sent to your email.");
-        }
-
-        private async Task SendWelcomeEmail(string email, string password)
-        {
-            var emailService = new EmailService(_configuration);
-            var subject = "Dobrodošli!";
-            var body = $"Zdravo, \n\nDobrodošli! Tvoj korisnički račun je uspješno kreiran. Tvoji podaci za logovanje:\n\nEmail: {email}\nLozinika: {password}\n\nPozdrav,\nDigitalno Selo";
-
-            await emailService.SendEmailAsync(email, subject, body);
-        }
-    }
+    open: boolean;
+    onClose: () => void;
+    countries: any[];
+    cities: any[];
+    newSelo: DodajSelo;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleCountryChange: (event: React.ChangeEvent<{ value: unknown }>) => void;
+    handleCityChange: (event: React.ChangeEvent<{ value: unknown }>) => void;
+    handleAddSelo: () => void;
 }
 
+const AddSeloModal: React.FC < AddSeloModalProps > = ({
+    open,
+    onClose,
+    countries,
+    cities,
+    newSelo,
+    handleChange,
+    handleCountryChange,
+    handleCityChange,
+    handleAddSelo
+}) => {
+    const [users, setUsers] = useState<any[]>([]); // State to hold users
+
+    useEffect(() => {
+        // Fetch users from the API
+        axios.get('/api/users') // Assuming your API endpoint is correct
+            .then((response) => {
+                setUsers(response.data); // Set the fetched users
+            })
+            .catch((error) => {
+                console.error("Error fetching users:", error);
+            });
+    }, []);
+
+    return (
+        < Modal
+            open ={ open}
+    onClose ={ onClose}
+    aria - labelledby = "add-selo-modal"
+            aria - describedby = "add-selo-modal-description"
+        >
+            < Box sx ={
+        {
+        position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4
+            }
+    }>
+                < Typography variant = "h6" gutterBottom > Dodaj novo selo</ Typography >
+                < TextField
+                    fullWidth
+                    label = "Naslov"
+                    name = "naziv"
+                    value ={ newSelo.naziv}
+    onChange ={ handleChange}
+    margin = "normal"
+/>
+
+< FormControl fullWidth margin = "normal" >
+
+    < InputLabel > Drzava </ InputLabel >
+
+    < Select
+                        value ={ newSelo.country}
+    name = "country"
+                        onChange ={ handleCountryChange}
+                    >
+                        {
+        countries.map(country => (
+                            < MenuItem key ={ country.id}
+        value ={ country.id}>
+                                { country.name}
+                            </ MenuItem >
+                        ))}
+                    </ Select >
+                </ FormControl >
+                < FormControl fullWidth margin = "normal" >
+                    < InputLabel > Lokacija </ InputLabel >
+                    < Select
+                        value ={ newSelo.city}
+    name = "city"
+                        onChange ={ handleCityChange}
+                    >
+                        {
+        cities.map(city => (
+                            < MenuItem key ={ city.id}
+        value ={ city.id}>
+                                { city.name}
+                            </ MenuItem >
+                        ))}
+                    </ Select >
+                </ FormControl >
+                {/* Dropdown for "Ovlasceni Korisnik" */}
+                < FormControl fullWidth margin = "normal" >
+                    < InputLabel > Ovlasceni Korisnik </ InputLabel >
+                    < Select
+                        value ={ newSelo.ovlasceniKorisnik}
+    name = "ovlasceniKorisnik"
+                        onChange ={ handleChange}
+                    >
+                        {
+        users.map(user => (
+                            < MenuItem key ={ user.id}
+        value ={ user.id}>
+                                { user.name}
+        {/* Assuming 'name' is the user’s name */}
+                            </ MenuItem >
+                        ))}
+                    </ Select >
+                </ FormControl >
+                < Button variant = "contained" color = "primary" onClick ={ handleAddSelo}
+    sx ={ { mt: 2 } }>
+                    Dodaj
+                </ Button >
+            </ Box >
+        </ Modal >
+    );
+};
+
+export default AddSeloModal;
