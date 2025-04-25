@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -17,7 +18,6 @@ const NovostiLista: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const { id: routeSeloId } = useParams<{ id: string }>();
 
-    // Function to fetch the news
     const fetchNews = async () => {
         try {
             const response = await axios.get(`https://localhost:7249/api/Novosti/${routeSeloId}`);
@@ -30,46 +30,52 @@ const NovostiLista: React.FC = () => {
         }
     };
 
-    // Call fetchNews when the component is mounted or routeSeloId changes
     useEffect(() => {
         fetchNews();
     }, [routeSeloId]);
 
-    // Function to handle modal open/close
     const handleOpenModal = () => setModalOpen(true);
     const handleCloseModal = () => setModalOpen(false);
 
-    // Function to refresh the news list after adding a new one
     const handleNewsAdded = () => {
-        fetchNews();  // Refresh the news list
-        handleCloseModal();  // Close the modal
+        fetchNews();
+        handleCloseModal();
     };
 
-    const lastThreeNews = news.slice(-3);
-
     return (
-        <section id="features" className="features">
+        <section id="features" className="news">
             <h2>Novosti</h2>
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
                 <p>{error}</p>
             ) : (
-                <div className="feature-cards">
-                    {lastThreeNews.map((novost) => (
-                        <div className="feature-card" key={novost.id}>
+                <div className="news-cards">
+                    {news.map((novost) => (
+                        <div className="news-card" key={novost.id}>
+                            <img
+                                src={`https://localhost:7249${(novost as any).slikaUrl}`}
+                                alt={novost.naslov}
+                                style={{
+                                    width: '100%',
+                                    maxHeight: '300px',
+                                    objectFit: 'cover',
+                                    marginBottom: '1rem',
+                                }}
+                            />
                             <h3>{novost.naslov}</h3>
-                            <p>{novost.opis}</p>
+                            <p>
+                                {novost.opis.length > 150 ? `${novost.opis.substring(0, 150)}...` : novost.opis}
+                            </p>
                         </div>
                     ))}
                 </div>
             )}
-            {/* Button to open modal */}
+
             <Button variant="contained" color="primary" onClick={handleOpenModal}>
                 Dodaj Novost
             </Button>
 
-            {/* Modal for adding news */}
             <Dialog open={modalOpen} onClose={handleCloseModal}>
                 <DialogTitle>Dodaj Novost</DialogTitle>
                 <DialogContent>

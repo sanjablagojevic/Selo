@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Data;
+using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ReactApp1.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ namespace ReactApp1.Server
 
             builder.Services.AddAuthorization();
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add services to the container.
@@ -43,6 +46,20 @@ namespace ReactApp1.Server
 
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.Migrate();
+
+                var services = scope.ServiceProvider;
+
+                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                await  ContextSeed.SeedRolesAsync(userManager, roleManager);
+                await  ContextSeed.SeedAdminAsync(userManager, roleManager);
+            }
 
             app.UseDefaultFiles();
             app.UseStaticFiles();

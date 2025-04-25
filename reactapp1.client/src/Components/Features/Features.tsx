@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 
 interface Novost {
@@ -41,9 +42,21 @@ const Features: React.FC = () => {
             ) : (
                 <div className="feature-cards">
                         {lastThreeNews.map((novost) => (
-                        <div className="feature-card" key={novost.id}>
+                            <div className="feature-card" key={novost.id}>
+                                <img
+                                    src={`https://localhost:7249${(novost as any).slikaUrl}`}
+                                    alt={novost.naslov}
+                                    style={{
+                                        width: '100%',
+                                        maxHeight: '300px',
+                                        objectFit: 'cover',
+                                        marginBottom: '1rem',
+                                    }}
+                                />
                             <h3>{novost.naslov}</h3>
-                            <p>{novost.opis}</p>
+                            <p>
+                                {novost.opis.length > 150 ? `${novost.opis.substring(0, 150)}...` : novost.opis}
+                            </p>
                         </div>
                     ))}
                 </div>
