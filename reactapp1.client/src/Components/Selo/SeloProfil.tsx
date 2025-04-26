@@ -408,7 +408,7 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                                 <Typography variant="body1">Logo</Typography>
                                 {images.length > 0 && images.some(img => img.isLogo) ? (
                                     <img
-                                        src={`https://localhost:7249/uploads/logo/${images.find(img => img.isLogo)?.path.split('/').pop()}`}
+                                        src={`https://localhost:7249/uploads/${images.find(img => img.isLogo)?.path.split('/').pop()}`}
                                         alt="Logo"
                                         width={200}
                                     />

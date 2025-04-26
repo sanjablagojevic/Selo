@@ -59,6 +59,7 @@ namespace ReactApp1.Server
 
                 await  ContextSeed.SeedRolesAsync(userManager, roleManager);
                 await  ContextSeed.SeedAdminAsync(userManager, roleManager);
+                await ContextSeed.SeedCountriesAndCitiesAsync(db);
             }
 
             app.UseDefaultFiles();
