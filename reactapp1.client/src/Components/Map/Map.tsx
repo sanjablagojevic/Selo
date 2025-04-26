@@ -8,6 +8,7 @@ interface SeloMapVM {
     naziv: string;
     latitude: number;
     longitude: number;
+    id: number; // Assuming each selo has a unique id
 }
 
 const centerPosition: LatLngExpression = [43.51, 18.25];
@@ -39,7 +40,14 @@ const Map: React.FC = () => {
 
                 {seloCoordinates.map((selo, index) => (
                     <Marker key={index} position={[selo.latitude, selo.longitude]}>
-                        <Popup>{selo.naziv}</Popup>
+                        <Popup>
+                            <div>
+                                <h3>{selo.naziv}</h3>
+                                <a href={`/view/${selo.id}`} target="_blank" rel="noopener noreferrer">
+                                    More Info
+                                </a>
+                            </div>
+                        </Popup>
                     </Marker>
                 ))}
             </MapContainer>

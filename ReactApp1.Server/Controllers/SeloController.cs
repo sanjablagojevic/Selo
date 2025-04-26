@@ -111,12 +111,129 @@ public class SeloController : ControllerBase
     public async Task<ActionResult<IEnumerable<SeloMapVM>>> GetSeloCoordinates()
     {
         return await _context.Sela
+            .Where(s => s.Lat != null && s.Lng != null) 
             .Select(s => new SeloMapVM
             {
+                Id = s.Id,
                 Naziv = s.Naziv,
-                Latitude = s.Lat,
+                Latitude = s.Lat,  
                 Longitude = s.Lng
             })
             .ToListAsync();
     }
+
+    [HttpPost("selo/{seloId}/uploadLogo")]
+    public async Task<IActionResult> UploadLogo(IFormFile file, int seloId)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        var filePath = Path.Combine("wwwroot/uploads/logo", file.FileName);
+
+        // Save the file
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var seloImage = new SeloImages
+        {
+            Path = filePath,
+            IsLogo = true,
+            IsFile = false,
+            SeloId = seloId
+        };
+
+        _context.SeloImages.Add(seloImage);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { FilePath = filePath });
+    }
+
+    [HttpPost("selo/{seloId}/uploadPhotos")]
+    public async Task<IActionResult> UploadPhotos(List<IFormFile> files, int seloId)
+    {
+        if (files == null || files.Count == 0)
+            return BadRequest("No files uploaded.");
+
+        var filePaths = new List<string>();
+        foreach (var file in files)
+        {
+            var filePath = Path.Combine("wwwroot/uploads/photos", file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            filePaths.Add(filePath);
+
+            var seloImage = new SeloImages
+            {
+                Path = filePath,
+                SeloId = seloId,
+                IsLogo = false,
+                IsFile = false
+            };
+
+            _context.SeloImages.Add(seloImage);
+        }
+
+        await _context.SaveChangesAsync();
+
+
+        return Ok(new { FilePaths = filePaths });
+    }
+
+    [HttpPost("selo/{seloId}/uploadDocuments")]
+    public async Task<IActionResult> UploadDocuments(List<IFormFile> files, int seloId)
+    {
+        if (files == null || files.Count == 0)
+            return BadRequest("No files uploaded.");
+
+        var filePaths = new List<string>();
+        foreach (var file in files)
+        {
+            var filePath = Path.Combine("wwwroot/uploads/documents", file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            filePaths.Add(filePath);
+
+            var seloImage = new SeloImages
+            {
+                Path = filePath,
+                SeloId = seloId,
+                IsLogo = false,
+                IsFile = true
+            };
+
+            _context.SeloImages.Add(seloImage);
+        }
+
+        await _context.SaveChangesAsync();
+
+
+        return Ok(new { FilePaths = filePaths });
+    }
+
+    // GET: api/Selo/{seloId}/images
+    [HttpGet("{seloId}/images")]
+    public async Task<ActionResult<IEnumerable<SeloImages>>> GetImagesBySeloId(int seloId)
+    {
+        var images = await _context.SeloImages
+            .Where(si => si.SeloId == seloId)
+            .ToListAsync();
+
+        if (images == null || images.Count == 0)
+        {
+            return NotFound($"No images found for SeloId {seloId}");
+        }
+
+        return Ok(images);
+    }
+
 }

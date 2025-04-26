@@ -17,6 +17,7 @@ namespace ReactApp1.Server.Data
         public DbSet<Novost> Novosti { get; set; }
         public DbSet<Countries> Countries { get; set; }
         public DbSet<Cities> Cities { get; set; }
+        public DbSet<SeloImages> SeloImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
