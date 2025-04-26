@@ -11,7 +11,10 @@ import {
     Divider,
     InputAdornment,
     Tabs,
-    Tab
+    Tab,
+    List,
+    ListItem,
+    ListItemText
 } from '@mui/material';
 import axios from 'axios';
 import { Link, useParams, useNavigate } from 'react-router-dom';
@@ -122,6 +125,33 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
         }
     };
 
+    const handleDocumentsUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            const formData = new FormData();
+            Array.from(files).forEach((file) => {
+                formData.append('files', file);
+            });
+
+            try {
+                const response = await axios.post(
+                    `https://localhost:7249/api/Selo/selo/${routeSeloId}/uploadDocuments`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+
+                alert('Documents uploaded successfully!');
+                console.log(response.data);
+            } catch (error) {
+                console.error('Error uploading documents:', error);
+                alert('Failed to upload documents.');
+            }
+        }
+    };
 
     return (
         <Box sx={{ width: '100vw', minHeight: '100vh', padding: 0, margin: 0 }}>
@@ -359,7 +389,7 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
 
                                 <Grid container spacing={2}>
                                     {images
-                                        .filter(img => !img.isLogo)
+                                        .filter(img => !img.isLogo && !img.isFile)
                                         .map((img, index) => (
                                             <Grid item xs={12} sm={6} md={4} key={index}>
                                                 <img
@@ -373,13 +403,33 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="body1">Documents</Typography>
+
                                 {editMode && (
                                     <Button variant="contained" component="label">
                                         Upload Document
-                                        <input type="file" hidden onChange={(e) => handleFilesUpload(e, 'documents')} />
+                                        <input type="file" hidden multiple onChange={(e) => handleDocumentsUpload(e)} />
                                     </Button>
                                 )}
+
+                                <List>
+                                    {images
+                                        .filter((doc) => doc.isFile)
+                                        .map((doc, index) => (
+                                            <ListItem key={index} divider>
+                                                <ListItemText primary={doc.path.split(/[/\\]/).pop()} />
+                                                <Button
+                                                    variant="outlined"
+                                                    component="a"
+                                                    href={`https://localhost:7249/uploads/documents/${doc.path.split(/[/\\]/).pop()}`}
+                                                    download={doc.name}
+                                                >
+                                                    Download
+                                                </Button>
+                                            </ListItem>
+                                        ))}
+                                </List>
                             </Grid>
+
                         </Grid>
                     </CardContent>
                 </Card>
