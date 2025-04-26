@@ -172,7 +172,7 @@ const SeloList: React.FC = () => {
                                     <IconButton color="primary" onClick={() => navigate(`/view/${selo.id}`)} title="View">
                                         <VisibilityIcon />
                                     </IconButton>
-                                    <IconButton color="secondary" onClick={() => { }} title="Edit">
+                                    <IconButton color="secondary" onClick={() => navigate(`/edit/${selo.id}`)} title="Edit">
                                         <EditIcon />
                                     </IconButton>
                                     <IconButton color="error" onClick={() => openDeleteConfirmation(selo.id)} title="Delete">

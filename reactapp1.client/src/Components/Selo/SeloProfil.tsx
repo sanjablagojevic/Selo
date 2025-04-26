@@ -2,12 +2,12 @@
 import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Grid, Card, CardContent, Divider, InputAdornment } from '@mui/material';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 interface VillageProfileProps {
     editMode: boolean;
-    handleProfileUpdate: () => void;
-    handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    //handleProfileUpdate: () => void;
+    //handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleFileUpload: (e: ChangeEvent<HTMLInputElement>, type: string) => void;
     handleFilesUpload: (e: ChangeEvent<HTMLInputElement>, type: string) => void;
     setEditMode: (edit: boolean) => void;
@@ -17,24 +17,44 @@ interface VillageProfileProps {
 const SeloProfil: React.FC<VillageProfileProps> = ({
     seloId,
     editMode,
-    handleProfileUpdate,
-    handleChange,
     handleFileUpload,
-    handleFilesUpload,
-    setEditMode,
+    handleFilesUpload
 }) => {
     const [selectedSelo, setSelectedSelo] = useState<any | null>(null);
     const { id: routeSeloId } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get(`https://localhost:7249/api/Selo/${routeSeloId}`)
-            .then(response => setSelectedSelo(response.data))
+            .then(response => {
+                const seloData = response.data;
+                setSelectedSelo(seloData);
+            })
             .catch(error => console.error('Error fetching selo:', error));
-    }, [seloId]);
+    }, [routeSeloId]);
 
     if (!selectedSelo) {
         return <Typography>Loading...</Typography>;
     }
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setSelectedSelo((prevSelo: any) => ({
+            ...prevSelo,
+            [name]: value,
+        }));
+    };
+
+    const handleProfileUpdate = async () => {
+        try {
+            await axios.put(`https://localhost:7249/api/Selo/${routeSeloId}`, selectedSelo);
+            alert('Profil sela je uspjesno azuriran.');
+        } catch (error) {
+            console.error('Greška prilikom ažuriranja profila sela:', error);
+            alert('Došlo je do greške prilikom ažuriranja profila.');
+        }
+    };
+
 
     return (
         <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', p: 4 }}>
@@ -82,7 +102,11 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
-                                label="Povrsina (km²)"
+                                label={
+                                    <span>
+                                        Povrsina (km<sup>2</sup>)
+                                    </span>
+                                }
                                 name="povrsina"
                                 value={selectedSelo?.povrsina || ''}
                                 disabled={!editMode}
@@ -124,7 +148,7 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                                 margin="normal"
                                 type="number"
                                 InputProps={{
-                                    startAdornment: <InputAdornment position="start">°</InputAdornment>,
+                                    startAdornment: <InputAdornment position="start">{'\u00B0'}</InputAdornment>,
                                 }}
                             />
                         </Grid>
@@ -139,7 +163,7 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                                 margin="normal"
                                 type="number"
                                 InputProps={{
-                                    startAdornment: <InputAdornment position="start">°</InputAdornment>,
+                                    startAdornment: <InputAdornment position="start">{'\u00B0'}</InputAdornment>,
                                 }}
                             />
                         </Grid>
@@ -265,7 +289,13 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                     {editMode ? 'Save Changes' : 'Close'}
                 </Button>
                 {editMode && (
-                    <Button variant="outlined" onClick={() => setEditMode(false)} sx={{ ml: 2 }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            navigate(-1);
+                        }}
+                        sx={{ ml: 2 }}
+                    >
                         Go Back
                     </Button>
                 )}

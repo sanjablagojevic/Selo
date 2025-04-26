@@ -100,5 +100,18 @@ namespace ReactApp1.Server.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("single/{id}")]
+        public async Task<ActionResult<Novost>> GetNovostById(int id)
+        {
+            var novost = await _context.Novosti.FindAsync(id);
+
+            if (novost == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(novost);
+        }
     }
 }

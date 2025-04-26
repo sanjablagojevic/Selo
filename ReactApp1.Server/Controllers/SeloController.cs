@@ -106,4 +106,17 @@ public class SeloController : ControllerBase
 
         return country.Cities.ToList();
     }
+
+    [HttpGet("coordinates")]
+    public async Task<ActionResult<IEnumerable<SeloMapVM>>> GetSeloCoordinates()
+    {
+        return await _context.Sela
+            .Select(s => new SeloMapVM
+            {
+                Naziv = s.Naziv,
+                Latitude = s.Lat,
+                Longitude = s.Lng
+            })
+            .ToListAsync();
+    }
 }

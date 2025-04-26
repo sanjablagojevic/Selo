@@ -12,8 +12,8 @@ const Header: React.FC = () => {
             <nav>
                 <ul>
                     <li><a href="#hero">Početna</a></li>
-                    <li><Link to="/selo">Sela</Link></li>
-                    <li><a href="/korisnici">Korisnici</a></li>
+                    <li><Link to="/villages">Sela</Link></li>
+                    <li><a href="/users">Korisnici</a></li>
                     <span><LogoutLink>Logout <AuthorizedUser value="email" /></LogoutLink></span>
                 </ul>
             </nav>

@@ -1,26 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { LatLngExpression } from 'leaflet';
 
-const position: LatLngExpression = [51.505, -0.09];
+interface SeloMapVM {
+    naziv: string;
+    latitude: number;
+    longitude: number;
+}
+
+const centerPosition: LatLngExpression = [43.51, 18.25];
 
 const Map: React.FC = () => {
+    const [seloCoordinates, setSeloCoordinates] = useState<SeloMapVM[]>([]);
+
+    useEffect(() => {
+        axios.get<SeloMapVM[]>('https://localhost:7249/api/Selo/coordinates')
+            .then(response => {
+                console.log(response.data);
+                setSeloCoordinates(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching coordinates:", error);
+            });
+    }, []);
+
     return (
         <div style={{ height: '50vh', width: '100%' }}>
             <MapContainer
-                center={position}
+                center={centerPosition}
                 zoom={13}
-                minZoom={3}  
+                minZoom={3}
                 maxZoom={19}
                 style={{ height: '100%', width: '100%' }}
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Marker position={position}>
-                    <Popup>A sample marker in London.</Popup>
-                </Marker>
-            </MapContainer>
 
+                {seloCoordinates.map((selo, index) => (
+                    <Marker key={index} position={[selo.latitude, selo.longitude]}>
+                        <Popup>{selo.naziv}</Popup>
+                    </Marker>
+                ))}
+            </MapContainer>
         </div>
     );
 };

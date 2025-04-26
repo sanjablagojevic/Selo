@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import AddNews from './AddNews';
+import { useNavigate } from 'react-router-dom';
 
 interface Novost {
     id: number;
@@ -17,6 +18,7 @@ const NovostiLista: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const { id: routeSeloId } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const fetchNews = async () => {
         try {
@@ -52,21 +54,28 @@ const NovostiLista: React.FC = () => {
             ) : (
                 <div className="news-cards">
                     {news.map((novost) => (
-                        <div className="news-card" key={novost.id}>
-                            <img
-                                src={`https://localhost:7249${(novost as any).slikaUrl}`}
-                                alt={novost.naslov}
-                                style={{
-                                    width: '100%',
-                                    maxHeight: '300px',
-                                    objectFit: 'cover',
-                                    marginBottom: '1rem',
-                                }}
-                            />
-                            <h3>{novost.naslov}</h3>
-                            <p>
-                                {novost.opis.length > 150 ? `${novost.opis.substring(0, 150)}...` : novost.opis}
-                            </p>
+                        <div
+                            className="news-card"
+                            key={novost.id}
+                            onClick={() => navigate(`/new/${novost.id}`)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className="news-card" key={novost.id}>
+                                <img
+                                    src={`https://localhost:7249${(novost as any).slikaUrl}`}
+                                    alt={novost.naslov}
+                                    style={{
+                                        width: '100%',
+                                        maxHeight: '300px',
+                                        objectFit: 'cover',
+                                        marginBottom: '1rem',
+                                    }}
+                                />
+                                <h3>{novost.naslov}</h3>
+                                <p>
+                                    {novost.opis.length > 150 ? `${novost.opis.substring(0, 150)}...` : novost.opis}
+                                </p>
+                            </div>
                         </div>
                     ))}
                 </div>
