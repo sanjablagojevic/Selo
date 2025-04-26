@@ -42,7 +42,13 @@
 
             public string? StepenRazvijenosti { get; set; }
 
-            public string? DodatneInformacije { get; set; } 
+            public string? Zaostajanje { get; set; }
+
+            public string? RazvojNapredovanje { get; set; }
+
+            public string? DodatneInformacije { get; set; }
+
+            public string? Prosperitet { get; set; }
 
             public string? JavniPrevoz { get; set; } 
 
@@ -51,6 +57,8 @@
             public string? EkonomskaVitalnost { get; set; }
 
             public string? OgranicenjaUrazvoju { get; set; }
+            public string? FacebookLink { get; set; }
+            public string? InstagramLink { get; set; }
 
             public List<SeloImages> SeloImages { get; set; } = new List<SeloImages>();
         }

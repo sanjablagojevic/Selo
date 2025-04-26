@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReactApp1.Server.Data;
 
@@ -11,9 +12,11 @@ using ReactApp1.Server.Data;
 namespace ReactApp1.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426123756_social links")]
+    partial class sociallinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -381,12 +384,6 @@ namespace ReactApp1.Server.Migrations
                     b.Property<double?>("Povrsina")
                         .HasColumnType("float");
 
-                    b.Property<string>("Prosperitet")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RazvojNapredovanje")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ResursiIKapaciteti")
                         .HasColumnType("nvarchar(max)");
 
@@ -397,9 +394,6 @@ namespace ReactApp1.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TipRuralnogPodrucja")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Zaostajanje")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

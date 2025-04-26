@@ -173,6 +173,7 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                 <Tab label="Lokacija" />
                 <Tab label="Poljoprivreda & Turizam" />
                 <Tab label="Društvene mreže" />
+                <Tab label="Stepen razvijenosti" />
                 <Tab label="Slike & Dokumenti" />
             </Tabs>
 
@@ -330,8 +331,8 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                                 <TextField
                                     fullWidth
                                     label="Facebook link"
-                                    name="facebook"
-                                    value={selectedSelo?.socialLinks?.facebook || ''}
+                                    name="facebookLink"
+                                    value={selectedSelo?.facebookLink || ''}
                                     onChange={handleChange}
                                     disabled={!editMode}
                                     margin="normal"
@@ -341,8 +342,8 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
                                 <TextField
                                     fullWidth
                                     label="Instagram link"
-                                    name="instagram"
-                                    value={selectedSelo?.socialLinks?.instagram || ''}
+                                    name="facebookLink"
+                                    value={selectedSelo?.instagramLink || ''}
                                     onChange={handleChange}
                                     disabled={!editMode}
                                     margin="normal"
@@ -354,6 +355,50 @@ const SeloProfil: React.FC<VillageProfileProps> = ({
             )}
 
             {tabIndex === 4 && (
+                <Card sx={{ mb: 4 }}>
+                    <CardContent>
+                        <Typography variant="h6">Stepen razvijenosti</Typography>
+                        <Divider sx={{ mb: 2 }} />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Zaostajanje"
+                                    name="zaostajanje"
+                                    value={selectedSelo?.zaostajanje || ''}
+                                    onChange={handleChange}
+                                    disabled={!editMode}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Razvoj/Napredovanje"
+                                    name="razvojNapredovanje"
+                                    value={selectedSelo?.razvojNapredovanje || ''}
+                                    onChange={handleChange}
+                                    disabled={!editMode}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Prosperitet"
+                                    name="prosperitet"
+                                    value={selectedSelo?.prosperitet || ''}
+                                    onChange={handleChange}
+                                    disabled={!editMode}
+                                    margin="normal"
+                                />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+            )}
+
+            {tabIndex === 5 && (
                 <Card sx={{ mb: 4 }}>
                     <CardContent>
                         <Typography variant="h6">Slike & Dokumenti</Typography>
